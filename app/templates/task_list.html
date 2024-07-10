@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tarefas</title>
+    <!-- Link para o Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{% url 'task-list' %}">Sistema de Tarefas</a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" 
+        aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'task-list' %}">Tarefas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'completar' %}">Tarefas Concluídas</a>
+                </li>
+                {% if user.is_authenticated %}
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-link btn btn-link">Sair</button>
+                </form>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">Login</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Botão para adicionar nova tarefa -->
+        <a href="{% url 'criar' %}" class="btn btn-success mb-3">Adicionar Nova Tarefa</a>
+
+        <!-- Lista de Tarefas -->
+        <ul class="list-group">
+            {% for task in tasks %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ task.title }}</strong>
+                    <p>{{ task.description }}</p>
+                  
+                </div>
+                  {% if task.completed %}
+                                    <span class="badge badge-success float-right">Concluída</span>
+                                {% endif %}
+                <span>
+                    <a href="{% url 'detalhes' task.pk %}" class="btn btn-sm btn-info mr-2">
+                        <i class="fas fa-eye"></i> Detalhes
+                    </a>
+                    <a href="{% url 'editar' task.pk %}" class="btn btn-sm btn-warning mr-2">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <a href="{% url 'deletar' task.pk %}" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir esta tarefa?')">
+                        <i class="fas fa-trash-alt"></i> Excluir
+                    </a>
+                </span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
